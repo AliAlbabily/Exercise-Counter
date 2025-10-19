@@ -5,18 +5,44 @@ const App = () => {
     const [exercises, setExercises] = useState([]);
     const idRef = useRef(1);
 
-    const addExercise = () => {
-        const name = window.prompt('Exercise name', `Exercise ${idRef.current}`) || `Exercise ${idRef.current}`;
-        const newItem = { id: idRef.current++, name };
-        setExercises(prev => [...prev, newItem]);
+    // Modal state: mode = 'add' | 'edit' | null
+    const [modalOpen, setModalOpen] = useState(false);
+    const [modalMode, setModalMode] = useState(null);
+    const [editingId, setEditingId] = useState(null);
+    const [form, setForm] = useState({ name: '', seconds: '' });
+
+    const openAddModal = () => {
+        setForm({ name: `Exercise ${idRef.current}`, seconds: '' });
+        setModalMode('add');
+        setEditingId(null);
+        setModalOpen(true);
     };
 
-    const editExercise = (id) => {
+    const openEditModal = (id) => {
         const item = exercises.find(e => e.id === id);
         if (!item) return;
-        const name = window.prompt('Edit exercise name', item.name);
-        if (name === null) return; // cancelled
-        setExercises(prev => prev.map(e => e.id === id ? { ...e, name } : e));
+        setForm({ name: item.name, seconds: item.seconds ?? '' });
+        setModalMode('edit');
+        setEditingId(id);
+        setModalOpen(true);
+    };
+
+    const closeModal = () => {
+        setModalOpen(false);
+        setModalMode(null);
+        setEditingId(null);
+    };
+
+    const saveFromModal = () => {
+        const name = form.name.trim() || `Exercise ${idRef.current}`;
+        const seconds = form.seconds === '' ? null : parseFloat(form.seconds);
+        if (modalMode === 'add') {
+            const newItem = { id: idRef.current++, name, seconds };
+            setExercises(prev => [...prev, newItem]);
+        } else if (modalMode === 'edit' && editingId != null) {
+            setExercises(prev => prev.map(e => e.id === editingId ? { ...e, name, seconds } : e));
+        }
+        closeModal();
     };
 
     const deleteExercise = (id) => {
@@ -43,9 +69,12 @@ const App = () => {
                             )}
                             {exercises.map(ex => (
                                 <tr key={ex.id}>
-                                    <td className="exercise-name">{ex.name}</td>
+                                    <td className="exercise-name">
+                                        <div className="name-line">{ex.name}</div>
+                                        {ex.seconds != null && <div className="seconds-line">{ex.seconds}s</div>}
+                                    </td>
                                     <td className="actions">
-                                        <button className="icon-btn" onClick={() => editExercise(ex.id)} title="Edit">
+                                        <button className="icon-btn" onClick={() => openEditModal(ex.id)} title="Edit">
                                             {/* pencil icon */}
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="#333"/>
@@ -66,8 +95,27 @@ const App = () => {
                     </table>
                 </div>
                 <div className="section-table section-table-side">
-                    <button className="primary-btn" onClick={addExercise}>New exercise counter</button>
+                    <button className="primary-btn" onClick={openAddModal}>New exercise counter</button>
                 </div>
+                {modalOpen && (
+                    <div className="modal-backdrop" role="dialog" aria-modal="true">
+                        <div className="modal">
+                            <h3>{modalMode === 'add' ? 'Add exercise' : 'Edit exercise'}</h3>
+                            <label>
+                                Name
+                                <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                            </label>
+                            <label>
+                                Seconds
+                                <input type="number" step="0.1" value={form.seconds} onChange={e => setForm(f => ({ ...f, seconds: e.target.value }))} placeholder="e.g. 1.5" />
+                            </label>
+                            <div className="modal-actions">
+                                <button className="primary-btn" onClick={saveFromModal}>{modalMode === 'add' ? 'Add' : 'Save'}</button>
+                                <button className="icon-btn" onClick={closeModal}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
