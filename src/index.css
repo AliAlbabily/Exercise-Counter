@@ -39,6 +39,12 @@ body {
     overflow: hidden;
 }
 
+/* Make the mobile container a column flex so children can split space */
+.mobile-container {
+    display: flex;
+    flex-direction: column;
+}
+
 /* Optional: Add a notch for more realistic mobile look */
 .mobile-container::before {
     content: '';
@@ -64,6 +70,28 @@ h1 {
 p {
     text-align: center;
     color: black;
+}
+
+/* section-table base styling */
+.section-table {
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12px;
+}
+
+/* Primary/main area should take roughly 80% of the container height */
+.section-table-main {
+    flex: 9 1 0%; /* grow 9, shrink 1 -> about 90% in a 9:1 ratio */
+    background-color: aqua;
+}
+
+/* Side/footer area should take roughly 20% of the container height */
+.section-table-side {
+    flex: 1 1 0%; /* grow 1, shrink 1 -> about 10% */
+    background-color: lightgreen;
 }
 
 @media (max-width: 600px) {
