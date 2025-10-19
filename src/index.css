@@ -94,6 +94,71 @@ p {
     background-color: lightgreen;
 }
 
+/* Exercise table styling */
+.exercise-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.exercise-table thead th {
+    text-align: left;
+    padding: 12px 16px;
+    background: #f7f7f7;
+    font-weight: 600;
+    color: #333;
+}
+
+.exercise-table tbody td {
+    padding: 12px 16px;
+    border-top: 1px solid #eee;
+    vertical-align: middle;
+}
+
+.exercise-table .exercise-name {
+    color: #111;
+}
+
+.exercise-table .actions {
+    text-align: right;
+    width: 120px;
+}
+
+.empty-row td {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+}
+
+.icon-btn {
+    background: transparent;
+    border: none;
+    padding: 6px;
+    margin-left: 6px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.icon-btn:hover {
+    background: rgba(0,0,0,0.06);
+}
+
+.primary-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: #0069d9;
+}
+
 @media (max-width: 600px) {
     .mobile-container {
         width: 100vw;
