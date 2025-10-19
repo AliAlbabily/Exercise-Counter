@@ -1,0 +1,87 @@
+html, body, #root {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Mobile container styling */
+.full-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100vw;
+}
+
+.mobile-container {
+    width: 375px; /* Typical mobile width */
+    height: 667px; /* Typical mobile height */
+    background-color: #ca3434; /* Different color from root background */
+    border-radius: 24px; /* Rounded corners like a phone */
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.2), /* Main shadow */
+        0 0 0 12px #333, /* Phone border */
+        0 0 40px rgba(0, 0, 0, 0.1); /* Outer glow */
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    padding: 30px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Optional: Add a notch for more realistic mobile look */
+.mobile-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 20px;
+    background-color: #333;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #333;
+    text-align: center;
+    margin: 0;
+    padding: 0 20px;
+}
+
+p {
+    text-align: center;
+    color: black;
+}
+
+@media (max-width: 600px) {
+    .mobile-container {
+        width: 100vw;
+        height: 100vh;
+        max-width: none;
+        max-height: none;
+        border-radius: 0;
+        box-shadow: none;
+        background-color: #ffffff;
+    }
+    
+    .mobile-container::before {
+        display: none; /* Remove the notch on small screens */
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+}
