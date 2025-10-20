@@ -33,7 +33,25 @@ const App = () => {
         setEditingId(null);
     };
 
+    const validateForm = () => {
+        const name = (form.name || '').trim();
+        const secondsRaw = form.seconds === '' ? '' : String(form.seconds);
+        if (!name) return { ok: false, message: 'Name is required' };
+        if (name.length > 17) return { ok: false, message: 'Name must be 17 characters or less' };
+        if (secondsRaw === '') return { ok: false, message: 'Seconds is required' };
+        const seconds = parseFloat(secondsRaw);
+        if (Number.isNaN(seconds)) return { ok: false, message: 'Seconds must be a number' };
+        if (seconds < 0.5) return { ok: false, message: 'Minimum seconds is 0.5' };
+        if (seconds > 10) return { ok: false, message: 'Maximum seconds is 10' };
+        return { ok: true };
+    };
+
     const saveFromModal = () => {
+        const validation = validateForm();
+        if (!validation.ok) {
+            // Do not proceed if invalid; UI shows inline message
+            return;
+        }
         const name = form.name.trim() || `Exercise ${idRef.current}`;
         const seconds = form.seconds === '' ? null : parseFloat(form.seconds);
         if (modalMode === 'add') {
@@ -94,7 +112,7 @@ const App = () => {
                         </tbody>
                     </table>
                 </div>
-                <div className="section-table section-table-side">
+                <div className="section-button section-table-side">
                     <button className="primary-btn" onClick={openAddModal}>New exercise counter</button>
                 </div>
                 {modalOpen && (
@@ -103,14 +121,24 @@ const App = () => {
                             <h3>{modalMode === 'add' ? 'Add exercise' : 'Edit exercise'}</h3>
                             <label>
                                 Name
-                                <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                                <input type="text" maxLength={17} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                                {(() => {
+                                    const v = validateForm();
+                                    if (!v.ok && v.message.toLowerCase().includes('name')) return <div className="field-error">{v.message}</div>;
+                                    return null;
+                                })()}
                             </label>
                             <label>
-                                Seconds
-                                <input type="number" step="0.1" value={form.seconds} onChange={e => setForm(f => ({ ...f, seconds: e.target.value }))} placeholder="e.g. 1.5" />
+                                Interval Seconds
+                                <input type="number" step="0.1" min={0.5} max={10} value={form.seconds} onChange={e => setForm(f => ({ ...f, seconds: e.target.value }))} placeholder="e.g. 1.5" />
+                                {(() => {
+                                    const v = validateForm();
+                                    if (!v.ok && (v.message.toLowerCase().includes('second') || v.message.toLowerCase().includes('number'))) return <div className="field-error">{v.message}</div>;
+                                    return null;
+                                })()}
                             </label>
                             <div className="modal-actions">
-                                <button className="primary-btn" onClick={saveFromModal}>{modalMode === 'add' ? 'Add' : 'Save'}</button>
+                                <button className="primary-btn" onClick={saveFromModal} disabled={!validateForm().ok}>{modalMode === 'add' ? 'Add' : 'Save'}</button>
                                 <button className="icon-btn" onClick={closeModal}>Cancel</button>
                             </div>
                         </div>
