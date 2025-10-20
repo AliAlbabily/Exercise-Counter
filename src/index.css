@@ -95,6 +95,10 @@ p {
     flex: 9 1 0%; /* grow 9, shrink 1 -> about 90% in a 9:1 ratio */
     background-color: aqua;
     align-items: flex-start;
+    /* allow internal scrolling instead of expanding the container */
+    min-height: 0; /* required for overflow to work properly inside flex children */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Side/footer area should take roughly 20% of the container height */
