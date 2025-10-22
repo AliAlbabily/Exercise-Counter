@@ -72,6 +72,51 @@ const App = () => {
         setExercises(prev => prev.filter(e => e.id !== id));
     };
 
+    // Run modal state
+    const [runModalOpen, setRunModalOpen] = useState(false);
+    const [runningId, setRunningId] = useState(null);
+    const [currentCount, setCurrentCount] = useState(0);
+    const intervalRef = useRef(null);
+
+    const openRunModal = (id) => {
+        setRunningId(id);
+        setCurrentCount(0);
+        setRunModalOpen(true);
+    };
+
+    const closeRunModal = () => {
+        stopCounting();
+        setRunModalOpen(false);
+        setRunningId(null);
+        setCurrentCount(0);
+    };
+
+    const startCounting = () => {
+        const item = exercises.find(e => e.id === runningId);
+        if (!item) return;
+        // clear any previous
+        stopCounting();
+        let counter = 0;
+        setCurrentCount(0);
+        const seconds = (item.seconds == null) ? 1 : Number(item.seconds) || 1;
+        intervalRef.current = setInterval(() => {
+            counter += 1;
+            setCurrentCount(counter);
+            // here you'd play sounds if desired
+            if (counter >= 20) {
+                stopCounting();
+            }
+        }, seconds * 1000);
+    };
+
+    const stopCounting = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+        setCurrentCount(0);
+    };
+
     return (
         <div className="full-page">
             <div className="mobile-container">
@@ -90,20 +135,20 @@ const App = () => {
                                 </tr>
                             )}
                             {exercises.map(ex => (
-                                <tr key={ex.id}>
+                                <tr key={ex.id} onClick={() => openRunModal(ex.id)} style={{ cursor: 'pointer' }}>
                                     <td className="exercise-name">
                                         <div className="name-line">{ex.name}</div>
                                         {ex.seconds != null && <div className="seconds-line">{ex.seconds}s</div>}
                                     </td>
                                     <td className="actions">
-                                        <button className="icon-btn" onClick={() => openEditModal(ex.id)} title="Edit">
+                                        <button className="icon-btn" onClick={(e) => { e.stopPropagation(); openEditModal(ex.id); }} title="Edit">
                                             {/* pencil icon */}
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="#222"/>
                                                 <path d="M20.71 7.04a1.003 1.003 0 0 0 0-1.42l-2.34-2.34a1.003 1.003 0 0 0-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z" fill="#222"/>
                                             </svg>
                                         </button>
-                                        <button className="icon-btn" onClick={() => deleteExercise(ex.id)} title="Delete">
+                                        <button className="icon-btn" onClick={(e) => { e.stopPropagation(); deleteExercise(ex.id); }} title="Delete">
                                             {/* trash icon */}
                                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12z" fill="#cb5555"/>
@@ -144,6 +189,22 @@ const App = () => {
                             <div className="modal-actions">
                                 <button className="primary-btn" onClick={saveFromModal} disabled={!validateForm().ok}>{modalMode === 'add' ? 'Add' : 'Save'}</button>
                                 <button className="icon-btn" onClick={closeModal}>Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                {runModalOpen && (
+                    <div className="modal-backdrop" role="dialog" aria-modal="true">
+                        <div className="modal">
+                            <h3>Running: {exercises.find(e => e.id === runningId)?.name ?? ''}</h3>
+                            <div style={{ marginBottom: 12 }}>
+                                Interval: {exercises.find(e => e.id === runningId)?.seconds ?? '1'}s
+                            </div>
+                            <div style={{ fontSize: 28, fontWeight: 700, textAlign: 'center', margin: '12px 0' }}>{currentCount}</div>
+                            <div className="modal-actions">
+                                <button className="primary-btn" onClick={startCounting}>Start Exercise</button>
+                                <button className="icon-btn" onClick={() => { stopCounting(); }} title="Stop">Stop</button>
+                                <button className="icon-btn" onClick={closeRunModal}>Close</button>
                             </div>
                         </div>
                     </div>

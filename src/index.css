@@ -235,6 +235,13 @@ p {
     gap: 8px;
 }
 
+.modal .counter-large {
+    font-size: 32px;
+    font-weight: 700;
+    text-align: center;
+    margin: 12px 0;
+}
+
 /* Small adjustments for inside mobile container so modal sits above content */
 .mobile-container {
     position: relative; /* ensure modal-backdrop positions correctly */
