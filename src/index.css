@@ -23,11 +23,11 @@ body {
 .mobile-container {
     width: 375px; /* Typical mobile width */
     height: 667px; /* Typical mobile height */
-    background-color: #ffffff; /* Different color from root background */
+    background-color: #f0bd67; /* Theme primary warm color */
     border-radius: 24px; /* Rounded corners like a phone */
     box-shadow: 
         0 10px 30px rgba(0, 0, 0, 0.2), /* Main shadow */
-        0 0 0 12px #333, /* Phone border */
+    0 0 0 12px #cb5555, /* Phone border (theme red) */
         0 0 40px rgba(0, 0, 0, 0.1); /* Outer glow */
     display: flex;
     flex-direction: column;
@@ -54,7 +54,7 @@ body {
     transform: translateX(-50%);
     width: 40%;
     height: 20px;
-    background-color: #333;
+    background-color: #cb5555; /* notch color */
     border-bottom-left-radius: 12px;
     border-bottom-right-radius: 12px;
 }
@@ -93,7 +93,7 @@ p {
 /* Primary/main area should take roughly 80% of the container height */
 .section-table-main {
     flex: 9 1 0%; /* grow 9, shrink 1 -> about 90% in a 9:1 ratio */
-    background-color: aqua;
+    background-color: transparent;
     align-items: flex-start;
     /* allow internal scrolling instead of expanding the container */
     min-height: 0; /* required for overflow to work properly inside flex children */
@@ -104,7 +104,7 @@ p {
 /* Side/footer area should take roughly 20% of the container height */
 .section-table-side {
     flex: 1 1 0%; /* grow 1, shrink 1 -> about 10% */
-    background-color: lightgreen;
+    background-color: transparent;
 }
 
 /* Exercise table styling */
@@ -120,9 +120,9 @@ p {
 .exercise-table thead th {
     text-align: left;
     padding: 12px 16px;
-    background: #f7f7f7;
+    background: #cb5555; /* table header uses theme red */
     font-weight: 600;
-    color: #333;
+    color: #fff;
 }
 
 .exercise-table tbody td {
@@ -160,7 +160,7 @@ p {
 }
 
 .primary-btn {
-    background: #007bff;
+    background: #bc4cba; /* theme purple */
     color: white;
     border: none;
     padding: 10px 16px;
@@ -169,7 +169,7 @@ p {
 }
 
 .primary-btn:hover {
-    background: #0069d9;
+    background: #9c3aa0; /* slightly darker purple */
 }
 
 /* Modal styles */
