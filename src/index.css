@@ -131,6 +131,14 @@ p {
     vertical-align: middle;
 }
 
+.exercise-table tbody tr {
+    transition: background-color 120ms ease;
+}
+
+.exercise-table tbody tr:hover {
+    background-color: rgba(188, 76, 186, 0.06); /* subtle purple hover using theme #bc4cba */
+}
+
 .exercise-table .exercise-name {
     color: #111;
 }
