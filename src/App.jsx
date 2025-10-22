@@ -10,11 +10,13 @@ const App = () => {
     const [modalMode, setModalMode] = useState(null);
     const [editingId, setEditingId] = useState(null);
     const [form, setForm] = useState({ name: '', seconds: '' });
+    const [touched, setTouched] = useState({ name: false, seconds: false });
 
     const openAddModal = () => {
         setForm({ name: `Exercise ${idRef.current}`, seconds: '' });
         setModalMode('add');
         setEditingId(null);
+        setTouched({ name: false, seconds: false });
         setModalOpen(true);
     };
 
@@ -24,6 +26,7 @@ const App = () => {
         setForm({ name: item.name, seconds: item.seconds ?? '' });
         setModalMode('edit');
         setEditingId(id);
+        setTouched({ name: false, seconds: false });
         setModalOpen(true);
     };
 
@@ -31,6 +34,7 @@ const App = () => {
         setModalOpen(false);
         setModalMode(null);
         setEditingId(null);
+        setTouched({ name: false, seconds: false });
     };
 
     const validateForm = () => {
@@ -121,19 +125,19 @@ const App = () => {
                             <h3>{modalMode === 'add' ? 'Add exercise' : 'Edit exercise'}</h3>
                             <label>
                                 Name
-                                <input type="text" maxLength={17} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+                                <input type="text" maxLength={17} value={form.name} onChange={e => { setForm(f => ({ ...f, name: e.target.value })); setTouched(t => ({ ...t, name: true })); }} onBlur={() => setTouched(t => ({ ...t, name: true }))} />
                                 {(() => {
                                     const v = validateForm();
-                                    if (!v.ok && v.message.toLowerCase().includes('name')) return <div className="field-error">{v.message}</div>;
+                                    if (!v.ok && v.message.toLowerCase().includes('name') && touched.name) return <div className="field-error">{v.message}</div>;
                                     return null;
                                 })()}
                             </label>
                             <label>
                                 Interval Seconds
-                                <input type="number" step="0.1" min={0.5} max={10} value={form.seconds} onChange={e => setForm(f => ({ ...f, seconds: e.target.value }))} placeholder="e.g. 1.5" />
+                                <input type="number" step="0.1" min={0.5} max={10} value={form.seconds} onChange={e => { setForm(f => ({ ...f, seconds: e.target.value })); setTouched(t => ({ ...t, seconds: true })); }} onBlur={() => setTouched(t => ({ ...t, seconds: true }))} placeholder="e.g. 1.5" />
                                 {(() => {
                                     const v = validateForm();
-                                    if (!v.ok && (v.message.toLowerCase().includes('second') || v.message.toLowerCase().includes('number'))) return <div className="field-error">{v.message}</div>;
+                                    if (!v.ok && (v.message.toLowerCase().includes('second') || v.message.toLowerCase().includes('number')) && touched.seconds) return <div className="field-error">{v.message}</div>;
                                     return null;
                                 })()}
                             </label>
