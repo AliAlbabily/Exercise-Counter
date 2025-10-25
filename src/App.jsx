@@ -72,7 +72,7 @@ const App = () => {
         if (secondsRaw === '') return { ok: false, message: 'Seconds is required' };
         const seconds = parseFloat(secondsRaw);
         if (Number.isNaN(seconds)) return { ok: false, message: 'Seconds must be a number' };
-        if (seconds < 0.5) return { ok: false, message: 'Minimum seconds is 0.5' };
+        if (seconds < 1.5) return { ok: false, message: 'Minimum seconds is 1.5' };
         if (seconds > 10) return { ok: false, message: 'Maximum seconds is 10' };
         return { ok: true };
     };
@@ -206,7 +206,7 @@ const App = () => {
                             </label>
                             <label>
                                 Interval Seconds
-                                <input type="number" step="0.1" min={0.5} max={10} value={form.seconds} onChange={e => { setForm(f => ({ ...f, seconds: e.target.value })); setTouched(t => ({ ...t, seconds: true })); }} onBlur={() => setTouched(t => ({ ...t, seconds: true }))} placeholder="e.g. 1.5" />
+                                <input type="number" step="0.1" min={1.5} max={10} value={form.seconds} onChange={e => { setForm(f => ({ ...f, seconds: e.target.value })); setTouched(t => ({ ...t, seconds: true })); }} onBlur={() => setTouched(t => ({ ...t, seconds: true }))} placeholder="e.g. 1.5" />
                                 {(() => {
                                     const v = validateForm();
                                     if (!v.ok && (v.message.toLowerCase().includes('second') || v.message.toLowerCase().includes('number')) && touched.seconds) return <div className="field-error">{v.message}</div>;
