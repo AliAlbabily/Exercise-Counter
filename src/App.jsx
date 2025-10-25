@@ -1,9 +1,36 @@
 import './index.css'; // or './App.css'
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const App = () => {
     const [exercises, setExercises] = useState([]);
     const idRef = useRef(1);
+
+    // Load from localStorage on mount
+    useEffect(() => {
+        try {
+            const raw = localStorage.getItem('exercises');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) {
+                    setExercises(parsed);
+                    const maxId = parsed.reduce((m, it) => Math.max(m, it.id || 0), 0);
+                    idRef.current = maxId + 1;
+                }
+            }
+        } catch (err) {
+            // ignore parse errors
+            console.error('Failed to load exercises from localStorage', err);
+        }
+    }, []);
+
+    // Save to localStorage when exercises change
+    useEffect(() => {
+        try {
+            localStorage.setItem('exercises', JSON.stringify(exercises));
+        } catch (err) {
+            console.error('Failed to save exercises to localStorage', err);
+        }
+    }, [exercises]);
 
     // Modal state: mode = 'add' | 'edit' | null
     const [modalOpen, setModalOpen] = useState(false);
