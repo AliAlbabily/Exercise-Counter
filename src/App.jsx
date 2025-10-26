@@ -149,7 +149,7 @@ const App = () => {
                     console.warn(`Missing sound file: ${soundPath}`);
                 });
 
-                if (counter >= 20) {
+                if (counter >= 21) {
                     stopCounting();
                 }
             }, seconds * 1000);
