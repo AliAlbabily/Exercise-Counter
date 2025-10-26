@@ -140,9 +140,14 @@ const App = () => {
                 counter += 1;
                 setCurrentCount(counter);
 
-                // optional: tick sound each count
-                // const tick = new Audio('/sounds/tick.mp3');
-                // tick.play().catch(() => {});
+                // 🎵 Play different sound for each count
+                const soundPath = `/sounds/counting-${counter}.mp3`;
+
+                // Check if the sound file exists before playing (optional safeguard)
+                const audio = new Audio(soundPath);
+                audio.play().catch(() => {
+                    console.warn(`Missing sound file: ${soundPath}`);
+                });
 
                 if (counter >= 20) {
                     stopCounting();
