@@ -104,6 +104,7 @@ const App = () => {
     const [runningId, setRunningId] = useState(null);
     const [currentCount, setCurrentCount] = useState(0);
     const intervalRef = useRef(null);
+    const [isRunning, setIsRunning] = useState(false);
 
     const openRunModal = (id) => {
         setRunningId(id);
@@ -121,15 +122,19 @@ const App = () => {
     const startCounting = () => {
         const item = exercises.find(e => e.id === runningId);
         if (!item) return;
-        // clear any previous
-        stopCounting();
+
+        stopCounting(); // clear any previous
         let counter = 0;
         setCurrentCount(0);
+
         const seconds = (item.seconds == null) ? 1 : Number(item.seconds) || 1;
+        setIsRunning(true); // 🔒 disable Start button
+
         intervalRef.current = setInterval(() => {
             counter += 1;
             setCurrentCount(counter);
-            // here you'd play sounds if desired
+            // optional: play sound here
+
             if (counter >= 20) {
                 stopCounting();
             }
@@ -142,6 +147,7 @@ const App = () => {
             intervalRef.current = null;
         }
         setCurrentCount(0);
+        setIsRunning(false); // 🔓 enable Start button again
     };
 
     return (
@@ -229,8 +235,24 @@ const App = () => {
                             </div>
                             <div style={{ fontSize: 28, fontWeight: 700, textAlign: 'center', margin: '12px 0' }}>{currentCount}</div>
                             <div className="modal-actions">
-                                <button className="primary-btn" onClick={startCounting}>Start Exercise</button>
-                                <button className="icon-btn" onClick={() => { stopCounting(); }} title="Stop">Stop</button>
+                                <button
+                                    className={`primary-btn ${isRunning ? 'disabled' : ''}`}
+                                    onClick={startCounting}
+                                    disabled={isRunning}
+                                >
+                                    {isRunning ? (
+                                        <>
+                                            <span className="spinner"></span> Running...
+                                        </>
+                                    ) : (
+                                        'Start Exercise'
+                                    )}
+                                </button>
+
+                                <button className="icon-btn" onClick={() => { stopCounting(); }} title="Stop">
+                                    Reset
+                                </button>
+
                                 <button className="icon-btn" onClick={closeRunModal}>Close</button>
                             </div>
                         </div>
