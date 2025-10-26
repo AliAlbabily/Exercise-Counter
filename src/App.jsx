@@ -130,15 +130,25 @@ const App = () => {
         const seconds = (item.seconds == null) ? 1 : Number(item.seconds) || 1;
         setIsRunning(true); // 🔒 disable Start button
 
-        intervalRef.current = setInterval(() => {
-            counter += 1;
-            setCurrentCount(counter);
-            // optional: play sound here
+        // 🎵 Play sound effect at start
+        const startSound = new Audio('/sounds/getting-ready.mp3'); // <-- your file path
+        startSound.play().catch(err => console.warn("Audio play failed:", err));
 
-            if (counter >= 20) {
-                stopCounting();
-            }
-        }, seconds * 1000);
+        // 🕒 Wait 5 seconds before beginning the counting
+        setTimeout(() => {
+            intervalRef.current = setInterval(() => {
+                counter += 1;
+                setCurrentCount(counter);
+
+                // optional: tick sound each count
+                // const tick = new Audio('/sounds/tick.mp3');
+                // tick.play().catch(() => {});
+
+                if (counter >= 20) {
+                    stopCounting();
+                }
+            }, seconds * 1000);
+        }, 5000); // <-- delay before starting (in ms)
     };
 
     const stopCounting = () => {
