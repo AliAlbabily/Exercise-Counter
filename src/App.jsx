@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 const App = () => {
     const [exercises, setExercises] = useState([]);
     const idRef = useRef(1);
+    const audioRef = useRef(null);
 
     // Load from localStorage on mount
     useEffect(() => {
@@ -125,27 +126,24 @@ const App = () => {
 
         stopCounting(); // clear any previous
         let counter = 0;
-        setCurrentCount(0);
 
         const seconds = (item.seconds == null) ? 1 : Number(item.seconds) || 1;
-        setIsRunning(true); // 🔒 disable Start button
+        setIsRunning(true); // disable Start button
 
-        // 🎵 Play sound effect at start
-        const startSound = new Audio('/sounds/getting-ready.mp3'); // <-- your file path
-        startSound.play().catch(err => console.warn("Audio play failed:", err));
+        // 🎵 Play "getting ready" sound
+        audioRef.current = new Audio('/sounds/getting-ready.mp3');
+        audioRef.current.play().catch(err => console.warn("Audio play failed:", err));
 
-        // 🕒 Wait 5 seconds before beginning the counting
+        // 🕒 Wait 5 seconds before beginning counting
         setTimeout(() => {
             intervalRef.current = setInterval(() => {
                 counter += 1;
                 setCurrentCount(counter);
 
-                // 🎵 Play different sound for each count
+                // 🥁 Play count-specific sound
                 const soundPath = `/sounds/counting-${counter}.mp3`;
-
-                // Check if the sound file exists before playing (optional safeguard)
-                const audio = new Audio(soundPath);
-                audio.play().catch(() => {
+                audioRef.current = new Audio(soundPath);
+                audioRef.current.play().catch(() => {
                     console.warn(`Missing sound file: ${soundPath}`);
                 });
 
@@ -153,7 +151,7 @@ const App = () => {
                     stopCounting();
                 }
             }, seconds * 1000);
-        }, 5000); // <-- delay before starting (in ms)
+        }, 5000);
     };
 
     const stopCounting = () => {
@@ -161,6 +159,14 @@ const App = () => {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
+
+        // 🛑 Stop any currently playing sound
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0; // reset to start
+            audioRef.current = null;
+        }
+
         setCurrentCount(0);
         setIsRunning(false); // 🔓 enable Start button again
     };
