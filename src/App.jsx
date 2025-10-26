@@ -120,13 +120,15 @@ const App = () => {
         setCurrentCount(0);
     };
 
+    const timeoutRef = useRef(null);
+
     const startCounting = () => {
         const item = exercises.find(e => e.id === runningId);
         if (!item) return;
 
         stopCounting(); // clear any previous
-        let counter = 0;
 
+        let counter = 0;
         const seconds = (item.seconds == null) ? 1 : Number(item.seconds) || 1;
         setIsRunning(true); // disable Start button
 
@@ -135,7 +137,7 @@ const App = () => {
         audioRef.current.play().catch(err => console.warn("Audio play failed:", err));
 
         // 🕒 Wait 5 seconds before beginning counting
-        setTimeout(() => {
+        timeoutRef.current =setTimeout(() => {
             intervalRef.current = setInterval(() => {
                 counter += 1;
                 setCurrentCount(counter);
@@ -155,9 +157,16 @@ const App = () => {
     };
 
     const stopCounting = () => {
+        // ⏹️ Clear any interval
         if (intervalRef.current) {
             clearInterval(intervalRef.current);
             intervalRef.current = null;
+        }
+
+        // ⏹️ Clear the pending timeout
+        if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+            timeoutRef.current = null;
         }
 
         // 🛑 Stop any currently playing sound
