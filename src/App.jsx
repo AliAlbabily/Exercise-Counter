@@ -133,7 +133,7 @@ const App = () => {
         setIsRunning(true); // disable Start button
 
         // 🎵 Play "getting ready" sound
-        audioRef.current = new Audio('/sounds/getting-ready.mp3');
+        audioRef.current = new Audio('./sounds/getting-ready.mp3');
         audioRef.current.play().catch(err => console.warn("Audio play failed:", err));
 
         // 🕒 Wait 5 seconds before beginning counting
@@ -143,7 +143,7 @@ const App = () => {
                 setCurrentCount(counter);
 
                 // 🥁 Play count-specific sound
-                const soundPath = `/sounds/counting-${counter}.mp3`;
+                const soundPath = `./sounds/counting-${counter}.mp3`;
                 audioRef.current = new Audio(soundPath);
                 audioRef.current.play().catch(() => {
                     console.warn(`Missing sound file: ${soundPath}`);
